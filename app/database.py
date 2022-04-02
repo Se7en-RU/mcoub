@@ -6,9 +6,9 @@ class Database:
     def __init__(self):
         self.conn = psycopg2.connect(user="postgres",
                                         password="postgres",
-                                        host="localhost",
+                                        host="postgres",
                                         port="5432",
-                                        database="reports_testing")
+                                        database="postgres")
         self.cur = self.conn.cursor()
 
     def close(self):

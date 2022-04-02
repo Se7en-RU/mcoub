@@ -36,3 +36,7 @@ async def search():
     return make_response(jsonify({'data': None, 'error': str(e)}), 500)
   
   return make_response(jsonify({'data': {'shazam': shazam_data, 'coub': coub_data}, 'error': None}), 200)
+
+
+if __name__ == '__main__':
+  app.run(host='0.0.0.0')

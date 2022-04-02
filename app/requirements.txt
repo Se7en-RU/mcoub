@@ -1,0 +1,3 @@
+shazamio==0.1.0.1
+flask[async]==2.1.1
+psycopg2==2.9.3
