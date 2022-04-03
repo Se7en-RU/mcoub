@@ -55,5 +55,10 @@ docs/html
 # i18n/l10n
 *.mo
 
+#certs
+/services/nginx/ssl/*
+/services/nginx/nginx.conf
+
+
 # pynev
 .python-version
