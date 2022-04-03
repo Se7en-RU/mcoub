@@ -2,7 +2,7 @@ import urllib. request, json, os.path
 from random import choice
 from shazamio.user_agent import USER_AGENTS
 from shazamio import Shazam
-from database import Database
+from modules.database import Database
 
 
 class Audio:
@@ -29,7 +29,7 @@ class Audio:
             raise Exception("Unable to download track")
         
         file_name = os.path.basename(url)
-        file_path = os.path.join('tracks/', file_name)
+        file_path = os.path.join('tmp/tracks', file_name)
 
         try:
             if file_name[-3:] == 'mp4':

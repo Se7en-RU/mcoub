@@ -1,6 +1,6 @@
 from flask import Flask, request, make_response, jsonify
-from check import Check
-from audio import Audio
+from modules.check import Check
+from modules.audio import Audio
 
 app = Flask(__name__)
 

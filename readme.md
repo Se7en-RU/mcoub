@@ -1,12 +1,28 @@
-# Coub Shazam searcher
+# Coub Shazam music searcher
 
-Пакет ищет музыку с coub.com и  распознает ее с помощью Shazam
+App provides search music from coub.com via Shazam.
+Приоложение осуществялет поиск музыки с coub.com посредством Shazam.
 
-## Запуск
+## Install | Установка
     docker-compose build
-    docker-compose up
-    
-## Роуты
 
-      POST http://localhost:5000/search
-      {url} - file url with song file
+## Run | Запуск
+    docker-compose up -d
+
+# Rest API
+
+### Request | Запрос
+
+`POST /search/`
+
+    curl -i -H 'Accept: application/json' -d 'url=https://coub.com/view/30s87m' http://localhost:5000/search
+
+### Response
+
+    {
+    "data": {
+        "coub": {},
+        "shazam": {},
+    },
+    "error": null
+}

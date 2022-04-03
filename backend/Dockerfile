@@ -6,11 +6,11 @@ RUN \
      apt-get clean && \
      rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /app
+WORKDIR /backend
 
-COPY requirements.txt /app
+COPY requirements.txt /backend
 RUN pip3 install --upgrade pip -r requirements.txt
 
-COPY . /app
+COPY . /backend
 
 EXPOSE 5000

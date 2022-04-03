@@ -1,7 +1,6 @@
 import psycopg2
 from psycopg2 import Error
 
-
 class Database:
     def __init__(self):
         self.conn = psycopg2.connect(user="postgres",

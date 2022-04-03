@@ -1,6 +1,6 @@
 import re
-from database import Database
-from coub import Coub
+from modules.database import Database
+from modules.coub import Coub
 
 class Check:
     def url(self, url):
