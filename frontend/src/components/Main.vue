@@ -8,7 +8,8 @@ import axios from 'axios';
 </script>
 
 <template>
-  <span>{{ publishedBooksMessage }}</span>
+  <span>{{ $route.params.coub_id }}</span>
+  {{ currentRouteName }}
 
     <form
         id="app"
@@ -40,7 +41,6 @@ import axios from 'axios';
             <input
             type="submit"
             value="Отправить"
-            v-if=""
             >
         </p>
 
@@ -59,11 +59,12 @@ export default {
     }
   },
   methods: {
-    //   formatValue (val) {
-    //     const formattedValue = val.toString().replace('^https?:\/\/coub\.com\/view\/?(\w+)', '')
-    //     return formattedValue
-    //     },
-
+      // mounted(){
+      //   if (this.currentRouteName === 'Coub') {
+      //     this.data = 'test'
+      //   }
+      //   console.log('created()');
+      // },
       async search() {
           try {
                 // const api = '/api/search'
@@ -74,6 +75,9 @@ export default {
                 // Handle Error Here
                 console.error(err);
             }
+
+            // this.$router.push({name: 'Coub', params: this.$data})
+
         },
         searchCoub: function (e) {
             e.preventDefault()
@@ -97,6 +101,9 @@ export default {
     publishedBooksMessage() {
       // `this` points to the component instance
       return 'Yes'
+    },
+    currentRouteName() {
+        return this.$route.name;
     }
   }
 }
