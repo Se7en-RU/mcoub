@@ -17,12 +17,12 @@ App provides search music from coub.com via Shazam.
 
     curl -i -H 'Accept: application/json' -d 'url=https://coub.com/view/30s87m' http://localhost:5000/search
 
-### Response
+### Response | Ответ
 
     {
         "data": {
-            "coub": {},
-            "shazam": {},
+            "coub": { ...data from coub.com... },
+            "shazam": { ...data from shazam... },
         },
         "error": null
     }
