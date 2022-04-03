@@ -6,14 +6,14 @@ app = Flask(__name__)
 
 @app.route('/search', methods=['POST'])
 async def search():
-  url = request.form.get('url')
+  content = request.get_json()
+
+ # No url in POST request provided
+  if 'url' not in content:
+    return make_response(jsonify({'data': None, 'error': 'No url provided'}), 400)
 
   checker = Check()
-  coub_id = checker.url(url)
-
-  # No url in POST request provided
-  if not url:
-    return make_response(jsonify({'data': None, 'error': 'No url provided'}), 400)
+  coub_id = checker.url(content['url'])
 
   # Cannot parse coub.com url
   if not coub_id:
