@@ -20,9 +20,9 @@ App provides search music from coub.com via Shazam.
 ### Response
 
     {
-    "data": {
-        "coub": {},
-        "shazam": {},
-    },
-    "error": null
-}
+        "data": {
+            "coub": {},
+            "shazam": {},
+        },
+        "error": null
+    }
