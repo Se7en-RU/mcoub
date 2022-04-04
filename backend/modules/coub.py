@@ -5,7 +5,6 @@ from shazamio.user_agent import USER_AGENTS
 class Coub:
     def get_coub(self, coub_id):
         url = "http://coub.com/api/v2/coubs/" + coub_id
-        print(url)
 
         try:
             opener = urllib.request.build_opener()

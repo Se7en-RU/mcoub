@@ -14,7 +14,6 @@ import Main from './components/Main.vue'
   
   <Main />
 </template>
-
 <style>
 @import './assets/base.css';
 

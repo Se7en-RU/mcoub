@@ -1,5 +1,7 @@
 <script setup>
 import IconApple from "./icons/IconApple.vue";
+import IconSpotify from "./icons/IconSpotify.vue";
+import IconDeezer from "./icons/IconDeezer.vue";
 import axios from "axios";
 </script>
 
@@ -8,43 +10,53 @@ import axios from "axios";
   <div class="bg-image"></div>
   <main>
     <div class="block">
-      search form
-    </div>
-    <i>
-      <IconApple />
-    </i>
-  <form
-      id="app"
-      @submit.prevent="sumbitForm"
-      novalidate="true"
-    >
-      <p>
-          <label for="url">Имя</label>
-          <input
-              id="url"
-              v-model="url"
-              type="text"
-              name="url"
-              autocomplete="off"
-              autofocus
-              placeholder="https://coub.com/view/1g2y7v"
-              required
-          >
-      </p>
-
-      <p>
-          <input type="submit" value="Отправить">
-      </p>
-
+      <form
+        id="app"
+        @submit.prevent="sumbitForm"
+        novalidate="true"
+        class="form-inline"
+      >
+        <label for="url">Имя</label>
+        <input
+            id="url"
+            v-model="url"
+            type="text"
+            name="url"
+            autocomplete="off"
+            autofocus
+            placeholder="https://coub.com/view/1g2y7v"
+            required
+        >
+        <button type="submit">🔍</button>
       </form>
-
+    </div>
       <div v-if=loading>
         Loading...
       </div>
-      {{ data }}
       <div v-if=data.coub>
-        <iframe :src="coubEmbedLink" allowfullscreen frameborder="0" width="640" height="360" allow="autoplay"></iframe>
+        <iframe :src="coubEmbedLink" allowfullscreen frameborder="0" width="640" height="360"></iframe>
       </div>
+
+      <div v-if=data.shazam>
+      <a :href="data.shazam.myshazam.apple.actions[0].uri" class="icon-link" v-if="data.shazam.myshazam.apple.actions[0].uri" title="Open in Apple Music" target="_blank">
+            <i><IconApple /></i>
+            Apple Music
+        </a>
+        <template v-if="data.shazam.hub.providers">
+        <a :href="provider.actions[0].uri" class="icon-link" v-for="provider in data.shazam.hub.providers" :key=provider.type :title="provider.caption" target="_blank">
+           <template v-if="provider.type === 'SPOTIFY'">
+            <i><IconSpotify /></i>
+            Spotify
+           </template>
+           <template v-if="provider.type === 'DEEZER'">
+            <i><IconDeezer /></i>
+            Deezer
+           </template>
+
+        </a>
+        </template>
+      </div>
+
   </main>
 
 <footer>Github 2022 (c)</footer>
@@ -68,12 +80,12 @@ export default {
   },
   methods: {
     async search() {
-      if (!this.url || !this.valiUrl(this.url)) {
-        this.$toast.error("Wrong url / Непраивльная ссылка");
+      if (!this.url || this.data.coub && this.url === 'https://coub.com/view/' + this.data.coub.permalink) {
         return;
       }
 
-      if (this.url === 'https:://coub.com' + this.data.coub.permalink) {
+      if (!this.valiUrl(this.url)) {
+        this.$toast.error("Wrong url / Непраивльная ссылка");
         return;
       }
 
@@ -86,6 +98,10 @@ export default {
           this.data = response.data.data;
           if (this.data) {
             this.$router.push({name: 'Coub', params: {'coub_id': this.data.coub.permalink}})
+
+            if(this.data.shazam)  {
+              this.data.shazam = this.data.shazam[0]
+            }
           }
 
         })
@@ -124,6 +140,58 @@ export default {
 </script>
 
 <style scoped>
+
+.icon-link {
+  display: flex;
+  align-items: center;
+}
+
+.icon-link i {
+  padding-right: 10px;
+}
+
+.form-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.form-inline label {
+  margin: 5px 10px 5px 0;
+}
+
+.form-inline input {
+  width: 40vh;
+  vertical-align: middle;
+  /* margin: 5px 10px 5px 0; */
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-size: 20px;
+}
+
+.form-inline input:focus {
+  outline: none;
+  border-color: #ddd;
+}
+
+.form-inline button {
+  padding: 9px 15px;
+  background-color: dodgerblue;
+  border: 0;
+  color: white;
+  border: 0;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-size: 20px;
+
+}
+
+.form-inline button:hover {
+  background-color: royalblue;
+}
 
 i {
   display: flex;

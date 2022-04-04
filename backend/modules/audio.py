@@ -59,6 +59,8 @@ class Audio:
 
             if not shazam_data or 'track' not in shazam_data:
                 shazam_data = None
+            else:
+                shazam_data = shazam_data['track']
 
         self.delete(file_path)
 
