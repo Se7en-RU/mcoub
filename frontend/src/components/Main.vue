@@ -1,22 +1,22 @@
 <script setup>
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
-import axios from 'axios';
+import DocumentationIcon from "./icons/IconDocumentation.vue";
+import ToolingIcon from "./icons/IconTooling.vue";
+import EcosystemIcon from "./icons/IconEcosystem.vue";
+import CommunityIcon from "./icons/IconCommunity.vue";
+import SupportIcon from "./icons/IconSupport.vue";
+import axios from "axios";
 </script>
 
 <template>
   <span>{{ $route.params.coub_id }}</span>
   {{ currentRouteName }}
 
+  <p>url:{{url}}</p>
     <form
         id="app"
-        @submit="searchCoub"
-        method="post"
+        @submit.prevent="sumbitForm"
         novalidate="true"
-        >
+      >
 
         <p v-if="errors.length">
             <b>Пожалуйста исправьте указанные ошибки:</b>
@@ -38,10 +38,7 @@ import axios from 'axios';
         </p>
 
         <p>
-            <input
-            type="submit"
-            value="Отправить"
-            >
+            <input type="submit" value="Отправить">
         </p>
 
         </form>
@@ -50,61 +47,65 @@ import axios from 'axios';
 </template>
 <script>
 export default {
+  beforeMount() {
+    this.$router.isReady().then(() => {
+      if (this.$route.name === 'Coub') {
+        this.url = 'https://coub.com/view/' + this.$route.params.coub_id
+        this.search()
+      }
+    });
+  },
   data() {
     return {
-        coub_data: {},
-        shazam_data: {},
-        errors: [],
-        url: '',
-    }
+      coub_data: {},
+      shazam_data: {},
+      errors: [],
+      url: "",
+      searchLoaing: "",
+    };
   },
   methods: {
-      // mounted(){
-      //   if (this.currentRouteName === 'Coub') {
-      //     this.data = 'test'
-      //   }
-      //   console.log('created()');
-      // },
-      async search() {
-          try {
-                // const api = '/api/search'
-                const api = 'https://mcoub.com/api/search'
-                const resp = await axios.post(api, {url: this.url});
-                console.log(resp.data);
-            } catch (err) {
-                // Handle Error Here
-                console.error(err);
-            }
+    // mounted(){
+      // if (this.currentRouteName === 'Coub') {
+      //   this.data = 'test'
+      // }
+    //   console.log('created()');
+    // },
+    async search() {
+      if (!this.url || !this.valiUrl(this.url)) {
+        this.$toast.error('Wrong url / Непраивльная ссылка');
+        return;
+      }
 
-            // this.$router.push({name: 'Coub', params: this.$data})
+      this.searchLoaing = true;
 
-        },
-        searchCoub: function (e) {
-            e.preventDefault()
-            this.errors = [];
+        const resp = await axios.post('https://mcoub.com/api/search', { url: this.url })
+          .then((response) => {
+            console.log(response)
+          }).catch((error) => {
+              if( error.response ) {
+                  console.log(error.response.data); // => the response payload 
+                  this.$toast.error('');
 
-            if (!this.url || !this.valiUrl(this.url)) {
-                this.errors.push('Wrong url');
-            }
+              }
+              });
 
-            if (!this.errors.length) {
-                this.search()
-            }
-        },
-        valiUrl: function (url) {
-            var re = /^https:\/\/coub\.com\/view\/\w+$/;
-            return re.test(url);
-        }
+      this.searchLoaing = false;
+
+      // this.$router.push({name: 'Coub', params: this.$data})
+    },
+    sumbitForm () {
+      this.search()
+    },
+    valiUrl: function (url) {
+      var re = /^https:\/\/coub\.com\/view\/\w+$/;
+      return re.test(url);
+    },
   },
   computed: {
-    // a computed getter
-    publishedBooksMessage() {
-      // `this` points to the component instance
-      return 'Yes'
-    },
     currentRouteName() {
-        return this.$route.name;
-    }
-  }
-}
+      return this.$route.name;
+    },
+  },
+};
 </script>

@@ -59,6 +59,9 @@ docs/html
 /services/nginx/ssl/*
 /services/nginx/nginx.conf
 
+#certs
+/backend/settings.ini
+
 
 # pynev
 .python-version
