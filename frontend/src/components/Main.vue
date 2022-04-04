@@ -1,101 +1,107 @@
 <script setup>
-import DocumentationIcon from "./icons/IconDocumentation.vue";
-import ToolingIcon from "./icons/IconTooling.vue";
-import EcosystemIcon from "./icons/IconEcosystem.vue";
-import CommunityIcon from "./icons/IconCommunity.vue";
-import SupportIcon from "./icons/IconSupport.vue";
+import IconApple from "./icons/IconApple.vue";
 import axios from "axios";
 </script>
 
 <template>
-  <span>{{ $route.params.coub_id }}</span>
-  {{ currentRouteName }}
+  <header>Header</header>
+  <div class="bg-image"></div>
+  <main>
+    <div class="block">
+      search form
+    </div>
+    <i>
+      <IconApple />
+    </i>
+  <form
+      id="app"
+      @submit.prevent="sumbitForm"
+      novalidate="true"
+    >
+      <p>
+          <label for="url">Имя</label>
+          <input
+              id="url"
+              v-model="url"
+              type="text"
+              name="url"
+              autocomplete="off"
+              autofocus
+              placeholder="https://coub.com/view/1g2y7v"
+              required
+          >
+      </p>
 
-  <p>url:{{url}}</p>
-    <form
-        id="app"
-        @submit.prevent="sumbitForm"
-        novalidate="true"
-      >
+      <p>
+          <input type="submit" value="Отправить">
+      </p>
 
-        <p v-if="errors.length">
-            <b>Пожалуйста исправьте указанные ошибки:</b>
-            <ul>
-            <li v-for="error in errors">{{ error }}</li>
-            </ul>
-        </p>
+      </form>
 
-        <p>
-            <label for="url">Имя</label>
-            <input
-                id="url"
-                v-model="url"
-                type="text"
-                name="url"
-                placeholder="https://coub.com/view/1g2y7v"
-                required
-            >
-        </p>
+      <div v-if=loading>
+        Loading...
+      </div>
+      {{ data }}
+      <div v-if=data.coub>
+        <iframe :src="coubEmbedLink" allowfullscreen frameborder="0" width="640" height="360" allow="autoplay"></iframe>
+      </div>
+  </main>
 
-        <p>
-            <input type="submit" value="Отправить">
-        </p>
-
-        </form>
-
-
+<footer>Github 2022 (c)</footer>
 </template>
 <script>
 export default {
   beforeMount() {
     this.$router.isReady().then(() => {
-      if (this.$route.name === 'Coub') {
-        this.url = 'https://coub.com/view/' + this.$route.params.coub_id
-        this.search()
+      if (this.$route.name === "Coub") {
+        this.url = "https://coub.com/view/" + this.$route.params.coub_id;
+        this.search();
       }
     });
   },
   data() {
     return {
-      coub_data: {},
-      shazam_data: {},
-      errors: [],
+      data: {},
       url: "",
-      searchLoaing: "",
+      loading: false,
     };
   },
   methods: {
-    // mounted(){
-      // if (this.currentRouteName === 'Coub') {
-      //   this.data = 'test'
-      // }
-    //   console.log('created()');
-    // },
     async search() {
       if (!this.url || !this.valiUrl(this.url)) {
-        this.$toast.error('Wrong url / Непраивльная ссылка');
+        this.$toast.error("Wrong url / Непраивльная ссылка");
         return;
       }
 
-      this.searchLoaing = true;
+      this.resetData();
 
-        const resp = await axios.post('https://mcoub.com/api/search', { url: this.url })
-          .then((response) => {
-            console.log(response)
-          }).catch((error) => {
-              if( error.response ) {
-                  console.log(error.response.data); // => the response payload 
-                  this.$toast.error('');
+      const resp = await axios
+        .post("https://mcoub.com/api/search", { url: this.url })
+        .then((response) => {
+          console.log(response)
+          this.data = response.data.data;
+          if (this.data) {
+            this.$router.push({name: 'Coub', params: {'coub_id': this.data.coub.permalink}})
+          }
 
-              }
-              });
+        })
+        .catch((error) => {
+          if (error.response && error.response.data.error) {
+            this.$toast.error(error.response.data.error);
+          }
 
-      this.searchLoaing = false;
+          this.$toast.error("Coub not found / Coub не найден");
+          this.$router.push({name: 'Home'});
+        });
 
-      // this.$router.push({name: 'Coub', params: this.$data})
+      this.loading = false;
     },
-    sumbitForm () {
-      this.search()
+    resetData() {
+      this.data = {};
+      this.loading = true;
+    },
+    sumbitForm() {
+      this.search();
     },
     valiUrl: function (url) {
       var re = /^https:\/\/coub\.com\/view\/\w+$/;
@@ -106,6 +112,29 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
+    coubEmbedLink() {
+      return '//coub.com/embed/' + this.data.coub.permalink + '?muted=false&autostart=false&originalSize=false&startWithHD=false'
+    }
   },
 };
 </script>
+
+<style scoped>
+
+i {
+  display: flex;
+  place-items: center;
+  place-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+@media (min-width: 1024px) {
+  i {
+    top: calc(50% - 25px);
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+  }
+}
+</style>

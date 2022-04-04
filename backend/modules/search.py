@@ -23,7 +23,7 @@ async def search():
   # Get data from coub.com
   coub_data = checker.coub_data(coub_id)
   if not coub_data:
-    return make_response(jsonify({'data': None, 'error': 'Cannot get data from coub.com'}), 500)
+    return make_response(jsonify({'data': None, 'error': 'Cannot get data from coub.com'}), 404)
 
   db_data = checker.coub_exists(coub_id)
   # If coub already in our database - just return it
@@ -34,6 +34,6 @@ async def search():
     audio = Audio()
     shazam_data = await audio.search(coub_id, coub_data)
   except Exception as e:
-    return make_response(jsonify({'data': None, 'error': str(e)}), 500)
+      shazam_data = None
   
   return make_response(jsonify({'data': {'shazam': shazam_data, 'coub': coub_data}, 'error': None}), 200)

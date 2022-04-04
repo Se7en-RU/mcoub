@@ -4,17 +4,16 @@ import Main from './components/Main.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <!-- <header> -->
+    <!-- <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" /> -->
 
-    <div class="wrapper">
+    <!-- <div class="wrapper">
       <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    </div> -->
+  <!-- </header> -->
 
-  <main>
-    <Main />
-  </main>
+  
+  <Main />
 </template>
 
 <style>
@@ -24,7 +23,7 @@ import Main from './components/Main.vue'
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-
+  width: 100%;
   font-weight: normal;
 }
 
@@ -37,12 +36,12 @@ header {
   margin: 0 auto 2rem;
 }
 
-a,
+/* a,
 .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
-}
+} */
 
 @media (hover: hover) {
   a:hover {
@@ -56,13 +55,13 @@ a,
     place-items: center;
   }
 
-  #app {
+  /* #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
-  }
+  } */
 
-  header {
+  /* header {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
@@ -72,10 +71,10 @@ a,
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
-  }
+  } */
 
-  .logo {
+  /* .logo {
     margin: 0 2rem 0 0;
-  }
+  } */
 }
 </style>
