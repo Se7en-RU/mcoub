@@ -2,6 +2,7 @@
 import IconApple from "./icons/IconApple.vue";
 import IconSpotify from "./icons/IconSpotify.vue";
 import IconDeezer from "./icons/IconDeezer.vue";
+import IconYoutube from "./icons/IconYoutube.vue";
 import axios from "axios";
 </script>
 
@@ -38,9 +39,13 @@ import axios from "axios";
       </div>
 
       <div v-if=data.shazam>
-      <a :href="data.shazam.myshazam.apple.actions[0].uri" class="icon-link" v-if="data.shazam.myshazam.apple.actions[0].uri" title="Open in Apple Music" target="_blank">
-            <i><IconApple /></i>
-            Apple Music
+        <a :href="AppleMusicLink" class="icon-link" v-if="AppleMusicLink" title="Open in Apple Music" target="_blank">
+          <i><IconApple /></i>
+          Apple Music
+        </a>
+         <a :href="YouTubeLink" class="icon-link" v-if="YouTubeLink"  title="Open in YouTube" target="_blank">
+            <i><IconYoutube /></i>
+            YouTube
         </a>
         <template v-if="data.shazam.hub.providers">
         <a :href="provider.actions[0].uri" class="icon-link" v-for="provider in data.shazam.hub.providers" :key=provider.type :title="provider.caption" target="_blank">
@@ -134,6 +139,32 @@ export default {
     },
     coubEmbedLink() {
       return '//coub.com/embed/' + this.data.coub.permalink + '?muted=false&autostart=false&originalSize=false&startWithHD=false'
+    },
+    YouTubeLink() {
+      let link;
+
+      if (this.data.shazam.urlparams['{tracktitle}']) {
+        link = this.data.shazam.urlparams['{tracktitle}']
+      }
+
+      if (this.data.shazam.urlparams['{trackartist}']) {
+        link = this.data.shazam.urlparams['{trackartist}'] + '+' + link
+      }
+
+      if (link) {
+        link = 'https://www.youtube.com/results?search_query=' + link
+      }
+
+      return link
+    },
+    AppleMusicLink() {
+      let link;
+
+      if (this.data.shazam.myshazam && this.data.shazam.myshazam.apple.actions[0].uri) {
+        link = this.data.shazam.myshazam.apple.actions[0].uri
+      }
+
+      return link
     }
   },
 };
