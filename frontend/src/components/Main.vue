@@ -73,6 +73,10 @@ export default {
         return;
       }
 
+      if (this.url === 'https:://coub.com' + this.data.coub.permalink) {
+        return;
+      }
+
       this.resetData();
 
       const resp = await axios
