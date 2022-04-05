@@ -14,6 +14,10 @@ const routes = [
     name: "Coub",
     component: {},
   },
+  {
+    path: "/:catchAll(.*)",
+    redirect: '/',
+  }
 ];
 
 const router = createRouter({
