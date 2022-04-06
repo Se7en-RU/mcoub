@@ -28,7 +28,7 @@ async def search():
   db_data = checker.coub_exists(coub_id)
   # If coub already in our database - just return it
   if db_data:
-    return make_response(jsonify({'data': {'shazam': db_data, 'coub': coub_data}, 'error': None}), 200)  
+    return make_response(jsonify({'data': {'shazam': db_data[0], 'coub': coub_data}, 'error': None}), 200)  
   
   try:
     audio = Audio()

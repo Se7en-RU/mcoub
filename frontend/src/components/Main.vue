@@ -40,7 +40,7 @@ import axios from "axios";
                 placeholder="https://coub.com/view/1g2y7v"
                 required
               />
-              <button type="submit" disabled>Найти</button>
+              <button type="submit">Найти</button>
             </form>
           </div>
         </div>
@@ -49,6 +49,14 @@ import axios from "axios";
 
     <div class="result-block">
       <div class="container">
+        <div class="music-container">
+          <div>
+            <img src="https://preview.colorlib.com/theme/poca/img/bg-img/x4.jpg.pagespeed.ic.iYWFcpOXtn.webp">
+          </div>
+          <div style="flex-grow: 1">3</div>
+        </div>
+
+        
         <div v-if="loading">Loading...</div>
         <div v-if="data.coub">
           <iframe
@@ -143,17 +151,12 @@ export default {
       const resp = await axios
         .post("https://mcoub.com/api/search", { url: this.url })
         .then((response) => {
-          console.log(response);
           this.data = response.data.data;
           if (this.data) {
             this.$router.push({
               name: "Coub",
               params: { coub_id: this.data.coub.permalink },
             });
-
-            if (this.data.shazam) {
-              this.data.shazam = this.data.shazam[0];
-            }
           }
         })
         .catch((error) => {
@@ -195,10 +198,26 @@ export default {
         let image = this.data.coub.image_versions.template;
         image = image.replace("%{version}", "big");
 
-        style = { 'background-image': "url(" + image + ")" };
+        style = { "background-image": "url(" + image + ")" };
       }
 
       return style;
+    },
+    shazamTrack() {
+      let track;
+      if (this.data.shazam && shazam.share) {
+        // if (this.data.shazam.urlparams["{tracktitle}"]) {
+        //   link = this.data.shazam.urlparams["{tracktitle}"];
+        // }
+        // if (this.data.shazam.urlparams["{trackartist}"]) {
+        //   link = this.data.shazam.urlparams["{trackartist}"] + "+" + link;
+        // }
+        // if (link) {
+        //   link = "https://www.youtube.com/results?search_query=" + link;
+        // }
+      }
+
+      return link;
     },
     coubEmbedLink() {
       return (
@@ -242,14 +261,33 @@ export default {
 </script>
 
 <style scoped>
+.music-container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+}
+
+.music-container > div {
+  background-color: #f1f1f1;
+  /* margin: 10px; */
+  /* padding: 20px; */
+  /* font-size: 30px; */
+}
+
+.music-container img{
+  display: flex;
+  max-width: 260px;
+  max-height: 260px;
+}
+
 .welcome-block {
   background: var(--color-background);
+  overflow: hidden;
 }
 
 .welcome-text {
   text-align: center;
   position: relative;
-  overflow: hidden;
 }
 
 .welcome-text h2 {
@@ -274,26 +312,6 @@ export default {
 
 label {
   display: none;
-}
-
-.bg-img {
-  height: 102%;
-  width: 102%;
-  position: absolute;
-
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
-
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-
-  -webkit-animation: fadein 3s;
-  animation: fadein 3s;
 }
 
 @-webkit-keyframes fadein {
@@ -385,6 +403,21 @@ i {
   height: 32px;
 }
 
+.bg-img {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .music-container {
+    flex-direction: column;
+  }
+
+  .music-container img{
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
 @media (min-width: 1024px) {
   i {
     top: calc(50% - 25px);
@@ -392,5 +425,27 @@ i {
     width: 50px;
     height: 50px;
   }
+
+  .bg-img {
+    display: block;
+    height: 102%;
+    width: 102%;
+    position: absolute;
+
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    -webkit-animation: fadein 3s;
+    animation: fadein 3s;
+  }
+
 }
 </style>
