@@ -2,17 +2,20 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createWebHistory, createRouter } from "vue-router";
 import Toaster from '@meforma/vue-toaster';
+import Home from './views/Home.vue'
+import View from './views/View.vue'
+
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: {},
+    component: Home,
   },
   {
     path: "/view/:coub_id",
     name: "Coub",
-    component: {},
+    component: View,
   },
   {
     path: "/:catchAll(.*)",

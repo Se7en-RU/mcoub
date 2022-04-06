@@ -51,12 +51,13 @@ import axios from "axios";
       <div class="container">
         <div class="music-container">
           <div>
-            <img src="https://preview.colorlib.com/theme/poca/img/bg-img/x4.jpg.pagespeed.ic.iYWFcpOXtn.webp">
+            <img
+              src="https://preview.colorlib.com/theme/poca/img/bg-img/x4.jpg.pagespeed.ic.iYWFcpOXtn.webp"
+            />
           </div>
           <div style="flex-grow: 1">3</div>
         </div>
 
-        
         <div v-if="loading">Loading...</div>
         <div v-if="data.coub">
           <iframe
@@ -116,12 +117,14 @@ import axios from "axios";
 </template>
 <script>
 export default {
+  watch: {
+    "$route.params.coub_id"(value) {
+      this.loadPage()
+    }
+  },
   beforeMount() {
     this.$router.isReady().then(() => {
-      if (this.$route.name === "Coub") {
-        this.url = "https://coub.com/view/" + this.$route.params.coub_id;
-        this.search();
-      }
+        this.loadPage()
     });
   },
   data() {
@@ -133,14 +136,9 @@ export default {
   },
   methods: {
     async search() {
-      if (
-        !this.url ||
-        (this.data.coub &&
-          this.url === "https://coub.com/view/" + this.data.coub.permalink)
-      ) {
+      if (this.data.coub && this.url === "https://coub.com/view/" + this.data.coub.permalink) {
         return;
       }
-
       if (!this.valiUrl(this.url)) {
         this.$toast.error("Непраивльная ссылка");
         return;
@@ -186,6 +184,15 @@ export default {
     valiUrl: function (url) {
       var re = /^https:\/\/coub\.com\/view\/\w+$/;
       return re.test(url);
+    },
+    loadPage() {
+      if (this.$route.name === "Coub") {
+        let url = "https://coub.com/view/" + this.$route.params.coub_id;
+        if (this.url !== url) {
+          this.url = url;
+          this.search();
+        }
+      }
     },
   },
   computed: {
@@ -274,7 +281,7 @@ export default {
   /* font-size: 30px; */
 }
 
-.music-container img{
+.music-container img {
   display: flex;
   max-width: 260px;
   max-height: 260px;
@@ -412,7 +419,7 @@ i {
     flex-direction: column;
   }
 
-  .music-container img{
+  .music-container img {
     max-width: 100%;
     max-height: 100%;
   }
@@ -446,6 +453,5 @@ i {
     -webkit-animation: fadein 3s;
     animation: fadein 3s;
   }
-
 }
 </style>
