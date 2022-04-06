@@ -32,7 +32,7 @@ import axios from "axios";
               <label for="url">Ссылка на Cob</label>
               <input
                 id="url"
-                v-model="url"
+                v-model="form.url"
                 type="text"
                 name="url"
                 autocomplete="off"
@@ -130,16 +130,19 @@ export default {
   data() {
     return {
       data: {},
-      url: "",
       loading: false,
-    };
+      form: {
+        url: ""
+      }
+    }
+     
   },
   methods: {
     async search() {
-      if (this.data.coub && this.url === "https://coub.com/view/" + this.data.coub.permalink) {
+      if (this.data.coub && this.form.url === "https://coub.com/view/" + this.data.coub.permalink) {
         return;
       }
-      if (!this.valiUrl(this.url)) {
+      if (!this.valiUrl(this.form.url)) {
         this.$toast.error("Непраивльная ссылка");
         return;
       }
@@ -147,7 +150,7 @@ export default {
       this.resetData();
 
       const resp = await axios
-        .post("https://mcoub.com/api/search", { url: this.url })
+        .post("https://mcoub.com/api/search", { url: this.form.url })
         .then((response) => {
           this.data = response.data.data;
           if (this.data) {
@@ -179,6 +182,7 @@ export default {
       this.loading = true;
     },
     sumbitForm() {
+      this.form.url = this.form.url
       this.search();
     },
     valiUrl: function (url) {
@@ -188,8 +192,8 @@ export default {
     loadPage() {
       if (this.$route.name === "Coub") {
         let url = "https://coub.com/view/" + this.$route.params.coub_id;
-        if (this.url !== url) {
-          this.url = url;
+        if (this.form.url !== url) {
+          this.form.url = url;
           this.search();
         }
       }
