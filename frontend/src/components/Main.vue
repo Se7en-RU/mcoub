@@ -4,13 +4,17 @@ import IconSpotify from "./icons/IconSpotify.vue";
 import IconDeezer from "./icons/IconDeezer.vue";
 import IconYoutube from "./icons/IconYoutube.vue";
 import axios from "axios";
+import NProgress from 'nprogress';
 </script>
 
 <template>
   <header></header>
   <main>
     <div class="welcome-block">
-      <div class="bg-img" v-bind:style="coubImageBackground"></div>
+      <Transition name="fade">
+      <div class="bg-img" v-bind:style="coubImageBackground"  v-if="data.coub"></div>
+      </Transition>
+      <div class="bg-fade"></div>
       <div class="container">
         <img
           alt="mCoub logo"
@@ -57,8 +61,7 @@ import axios from "axios";
           </div>
           <div style="flex-grow: 1">3</div>
         </div>
-
-        <div v-if="loading">Loading...</div>
+        <Transition name="fade">
         <div v-if="data.coub">
           <iframe
             :src="coubEmbedLink"
@@ -68,6 +71,7 @@ import axios from "axios";
             height="360"
           ></iframe>
         </div>
+        </Transition>
 
         <div v-if="data.shazam">
           <a
@@ -146,7 +150,8 @@ export default {
         this.$toast.error("Непраивльная ссылка");
         return;
       }
-
+      
+      NProgress.start();
       this.resetData();
 
       const resp = await axios
@@ -169,12 +174,8 @@ export default {
           this.$router.push({ name: "Home" });
         })
         .finally(() => {
-          setTimeout(
-            function () {
-              this.loading = false;
-            }.bind(this),
-            500
-          );
+          NProgress.done();
+          this.loading = false;
         });
     },
     resetData() {
@@ -204,7 +205,7 @@ export default {
       return this.$route.name;
     },
     coubImageBackground() {
-      let style = {};
+      let style = { "background-image": "none" };
       if (this.data.coub && this.data.coub.image_versions.template) {
         let image = this.data.coub.image_versions.template;
         image = image.replace("%{version}", "big");
@@ -414,8 +415,11 @@ i {
   height: 32px;
 }
 
-.bg-img {
+.bg-img, .bg-fade {
   display: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 
 @media only screen and (max-width: 767px) {
@@ -437,25 +441,27 @@ i {
     height: 50px;
   }
 
+  .bg-fade {
+    display: block;
+    opacity: 0.5;
+    background: var(--color-background);
+  }
+
   .bg-img {
     display: block;
-    height: 102%;
-    width: 102%;
-    position: absolute;
-
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
-
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
     -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
+  }
 
-    -webkit-animation: fadein 3s;
-    animation: fadein 3s;
+  .bg-img::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
   }
 }
 </style>
