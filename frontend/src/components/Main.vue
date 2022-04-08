@@ -50,30 +50,23 @@ import NProgress from 'nprogress';
         </div>
       </div>
     </div>
+    <Transition name="fade">
+      <div class="result-block" v-if="data.shazam">
+        <div class="container">
+          <div class="music-container">
+            <div class="album">
+              <img
+                :alt="shazamTrackName"
+                :src="shazamTrackImage"
+              />
+            </div>
+            <div class="content">
+              <span>{{ this.data.shazam.subtitle }}</span>
+              <h2>{{ this.data.shazam.title }}</h2>
 
-    <div class="result-block">
-      <div class="container">
-        <div class="music-container">
-          <div>
-            <img
-              src="https://preview.colorlib.com/theme/poca/img/bg-img/x4.jpg.pagespeed.ic.iYWFcpOXtn.webp"
-            />
-          </div>
-          <div style="flex-grow: 1">3</div>
-        </div>
-        <Transition name="fade">
-        <div v-if="data.coub">
-          <iframe
-            :src="coubEmbedLink"
-            allowfullscreen
-            frameborder="0"
-            width="640"
-            height="360"
-          ></iframe>
-        </div>
-        </Transition>
+              
+              
 
-        <div v-if="data.shazam">
           <a
             :href="AppleMusicLink"
             class="icon-link"
@@ -94,6 +87,7 @@ import NProgress from 'nprogress';
             <i><IconYoutube /></i>
             YouTube
           </a>
+
           <template v-if="data.shazam.hub.providers">
             <a
               :href="provider.actions[0].uri"
@@ -112,9 +106,25 @@ import NProgress from 'nprogress';
               </template>
             </a>
           </template>
+
+              
+              <div class="meta"></div>
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- <div v-if="data.coub">
+          <iframe
+            :src="coubEmbedLink"
+            allowfullscreen
+            frameborder="0"
+            width="640"
+            height="360"
+          ></iframe>
+        </div> -->
+    </Transition>
   </main>
 
   <footer>Github 2022 (c)</footer>
@@ -134,7 +144,6 @@ export default {
   data() {
     return {
       data: {},
-      loading: false,
       form: {
         url: ""
       }
@@ -157,12 +166,10 @@ export default {
               params: { coub_id: this.form.url.replace('https://coub.com/view/' , '') },
             }
 
+      this.$router.push(newRoute);
       if (!this.$route.params.coub_id) {
-         this.$router.push(newRoute);
          return;
       }
-
-      this.$router.replace(newRoute);
       
       NProgress.start();
       this.resetData();
@@ -171,12 +178,6 @@ export default {
         .post("https://mcoub.com/api/search", { url: this.form.url })
         .then((response) => {
           this.data = response.data.data;
-          if (this.data) {
-            this.$router.replace({
-              name: "Coub",
-              params: { coub_id: this.data.coub.permalink },
-            });
-          }
         })
         .catch((error) => {
           if (error.response && error.response.data.error) {
@@ -188,12 +189,10 @@ export default {
         })
         .finally(() => {
           NProgress.done();
-          this.loading = false;
         });
     },
     resetData() {
       this.data = {};
-      this.loading = true;
     },
     sumbitForm() {
       this.search();
@@ -213,9 +212,6 @@ export default {
     },
   },
   computed: {
-    currentRouteName() {
-      return this.$route.name;
-    },
     coubImageBackground() {
       let style = { "background-image": "none" };
       if (this.data.coub && this.data.coub.image_versions.template) {
@@ -227,22 +223,6 @@ export default {
 
       return style;
     },
-    shazamTrack() {
-      let track;
-      if (this.data.shazam && shazam.share) {
-        // if (this.data.shazam.urlparams["{tracktitle}"]) {
-        //   link = this.data.shazam.urlparams["{tracktitle}"];
-        // }
-        // if (this.data.shazam.urlparams["{trackartist}"]) {
-        //   link = this.data.shazam.urlparams["{trackartist}"] + "+" + link;
-        // }
-        // if (link) {
-        //   link = "https://www.youtube.com/results?search_query=" + link;
-        // }
-      }
-
-      return link;
-    },
     coubEmbedLink() {
       return (
         "//coub.com/embed/" +
@@ -250,6 +230,23 @@ export default {
         "?muted=false&autostart=false&originalSize=false&startWithHD=false"
       );
     },
+    shazamTrackName() {
+      let name;
+      if (this.data.shazam) {
+        name = `${this.data.shazam.subtitle} - ${this.data.shazam.title}`
+      }
+
+      return name;
+    },
+    shazamTrackImage() {
+      let url;
+      if (this.data.shazam) {
+        url = this.data.shazam.share.image
+      }
+
+      return url;
+    },
+
     YouTubeLink() {
       let link;
       if (this.data.shazam) {
@@ -292,17 +289,37 @@ export default {
 }
 
 .music-container > div {
-  background-color: #f1f1f1;
+  background: var(--color-background-inverse);
   /* margin: 10px; */
   /* padding: 20px; */
   /* font-size: 30px; */
 }
 
-.music-container img {
+.music-container .album img {
   display: flex;
   max-width: 260px;
   max-height: 260px;
 }
+
+.music-container .content  {
+  padding: 20px;
+  flex-grow: 1
+}
+
+.music-container .content span {
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: var(--color-pink);
+  text-transform: uppercase;
+}
+
+.music-container .content h2 {
+  font-size: 36px;
+  color: var(--color-text-inverse);
+  line-height: 1.4;
+  font-weight: 400;
+}
+
 
 .welcome-block {
   background: var(--color-background);
