@@ -8,7 +8,6 @@ import NProgress from 'nprogress';
 </script>
 
 <template>
-  <header></header>
   <main>
     <div class="welcome-block">
       <Transition name="fade">
@@ -16,6 +15,7 @@ import NProgress from 'nprogress';
       </Transition>
       <div class="bg-fade"></div>
       <div class="container">
+        <router-link to="/">
         <img
           alt="mCoub logo"
           class="logo"
@@ -23,6 +23,7 @@ import NProgress from 'nprogress';
           width="125"
           height="125"
         />
+        </router-link>
         <div class="welcome-text">
           <h2>Музыка из COUB</h2>
           <h5>Распознать музыку с помощью Shazam</h5>
@@ -54,60 +55,63 @@ import NProgress from 'nprogress';
       <div class="result-block" v-if="data.shazam">
         <div class="container">
           <div class="music-container">
-            <div class="album">
+            <div class="album" v-if="shazamTrackImage">
               <img
                 :alt="shazamTrackName"
                 :src="shazamTrackImage"
               />
             </div>
             <div class="content">
-              <span>{{ this.data.shazam.subtitle }}</span>
+              <div class="meta">
+                <span>{{ shazamMetaData }}</span>
+                <!-- <a :href="this.data.coub.file_versions.html5.audio.high.url" title="Скачать оригинал" download target="_blank">Скачать оригинал</a> -->
+              </div>
+              <!-- <div class="names" @click="copyClipboadName()"> -->
               <h2>{{ this.data.shazam.title }}</h2>
+              <p>{{ this.data.shazam.subtitle }}</p>
+              <!-- </div> -->
 
-              
-              
+              <div class="links">
+                <a
+                  :href="AppleMusicLink"
+                  class="icon-link"
+                  v-if="AppleMusicLink"
+                  title="Open in Apple Music"
+                  target="_blank"
+                >
+                  <i><IconApple /></i>
+                  Apple Music
+                </a>
+                <a
+                  :href="YouTubeLink"
+                  class="icon-link"
+                  v-if="YouTubeLink"
+                  title="Open in YouTube"
+                  target="_blank"
+                >
+                  <i><IconYoutube /></i>
+                  YouTube
+                </a>
+                <template v-if="data.shazam.hub.providers">
+                  <a
+                    :href="provider.actions[0].uri"
+                    class="icon-link"
+                    v-for="provider in data.shazam.hub.providers"
+                    :key="provider.type"
+                    :title="provider.caption"
+                  >
+                    <template v-if="provider.type === 'SPOTIFY'">
+                      <i><IconSpotify /></i>
+                      Spotify
+                    </template>
+                    <template v-if="provider.type === 'DEEZER'">
+                      <i><IconDeezer /></i>
+                      Deezer
+                    </template>
+                  </a>
+                </template>
+              </div>
 
-          <a
-            :href="AppleMusicLink"
-            class="icon-link"
-            v-if="AppleMusicLink"
-            title="Open in Apple Music"
-            target="_blank"
-          >
-            <i><IconApple /></i>
-            Apple Music
-          </a>
-          <a
-            :href="YouTubeLink"
-            class="icon-link"
-            v-if="YouTubeLink"
-            title="Open in YouTube"
-            target="_blank"
-          >
-            <i><IconYoutube /></i>
-            YouTube
-          </a>
-
-          <template v-if="data.shazam.hub.providers">
-            <a
-              :href="provider.actions[0].uri"
-              class="icon-link"
-              v-for="provider in data.shazam.hub.providers"
-              :key="provider.type"
-              :title="provider.caption"
-            >
-              <template v-if="provider.type === 'SPOTIFY'">
-                <i><IconSpotify /></i>
-                Spotify
-              </template>
-              <template v-if="provider.type === 'DEEZER'">
-                <i><IconDeezer /></i>
-                Deezer
-              </template>
-            </a>
-          </template>
-
-              
               <div class="meta"></div>
 
             </div>
@@ -119,6 +123,7 @@ import NProgress from 'nprogress';
           <iframe
             :src="coubEmbedLink"
             allowfullscreen
+            
             frameborder="0"
             width="640"
             height="360"
@@ -126,8 +131,6 @@ import NProgress from 'nprogress';
         </div> -->
     </Transition>
   </main>
-
-  <footer>Github 2022 (c)</footer>
 </template>
 <script>
 export default {
@@ -210,6 +213,29 @@ export default {
         }
       }
     },
+    copyClipboadName() {
+      if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(this.shazamTrackName);
+      } else {
+          let textArea = document.createElement("textarea");
+          textArea.value = this.shazamTrackName;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+
+          try {
+            document.execCommand('copy');
+          } catch (err) {
+             this.$toast.error("Не удалось скопировать название");
+             return;
+          }
+      }
+
+      this.$toast.success("Название скопировано");
+    },
   },
   computed: {
     coubImageBackground() {
@@ -246,7 +272,29 @@ export default {
 
       return url;
     },
+    shazamMetaData() {
+      let meta
 
+      const a = Array.from(this.data.shazam.sections[0].metadata);
+
+      a.forEach(function(item, index, array) {
+        if (meta) {
+          meta = meta + ' • ' + item.text
+        } else {
+          meta = item.text
+        }
+      });
+
+      // const target_copy = Object.assign({}, this.data.shazam.sections[0].metadata);
+
+      // console.log(target_copy[0].text)
+      // for (let value of a) {
+      //   console.log(a.text)
+      //   // let meta = meta + value.text
+      // }
+
+      return meta
+    },
     YouTubeLink() {
       let link;
       if (this.data.shazam) {
@@ -297,8 +345,9 @@ export default {
 
 .music-container .album img {
   display: flex;
-  max-width: 260px;
-  max-height: 260px;
+  width: 100%;
+  max-width: 285px;
+  max-height: 285px;
 }
 
 .music-container .content  {
@@ -306,11 +355,25 @@ export default {
   flex-grow: 1
 }
 
-.music-container .content span {
+.music-container .content .meta  {
+  justify-content: space-between;
+  display: flex;
+  text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 600;
+}
+
+.music-container .content .meta span {
   color: var(--color-pink);
-  text-transform: uppercase;
+}
+
+.music-container .content .meta a {
+  color: #666;
+}
+
+.music-container .content p {
+    color: #666;
+    font-size: 18px;
 }
 
 .music-container .content h2 {
@@ -318,6 +381,36 @@ export default {
   color: var(--color-text-inverse);
   line-height: 1.4;
   font-weight: 400;
+  margin-top: 10px;
+}
+
+/* .music-container .content .names:hover {
+  cursor: pointer;
+} */
+
+.music-container .content .links {
+  margin-top: 20px;
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.music-container .content .links a {
+  color: var(--color-text-inverse);
+  flex: 50%;
+  margin-top: 10px;
+}
+
+
+.music-container .content .links a:hover {
+  opacity: 0.8;
+}
+
+.music-container .content .links i {
+  display: flex;
+  place-items: center;
+  place-content: center;
+  width: 45px;
+  height: 45px;
 }
 
 
@@ -373,16 +466,6 @@ label {
   }
 }
 
-/* main {
-  display: flex;
-  min-height: 50vh;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-} */
-
 .icon-link {
   display: flex;
   align-items: center;
@@ -436,61 +519,57 @@ main {
   cursor: pointer;
 }
 
-i {
-  display: flex;
-  place-items: center;
-  place-content: center;
-  width: 32px;
-  height: 32px;
+.bg-img {
+  display: block;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+
+.bg-img::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+}
+
+.bg-fade {
+  display: block;
+  opacity: 0.5;
+  background: var(--color-background);
 }
 
 .bg-img, .bg-fade {
-  display: none;
   height: 100%;
   width: 100%;
   position: absolute;
 }
 
+@media only screen and (max-width: 400px) {
+  .music-container .content .links a {
+    flex: 100%;
+  }
+}
+
 @media only screen and (max-width: 767px) {
+  /* .bg-img, .bg-fade {
+    display: none;
+  } */
+
   .music-container {
     flex-direction: column;
   }
 
-  .music-container img {
+  .music-container .album img {
     max-width: 100%;
     max-height: 100%;
   }
 }
 
 @media (min-width: 1024px) {
-  i {
-    top: calc(50% - 25px);
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
-  }
 
-  .bg-fade {
-    display: block;
-    opacity: 0.5;
-    background: var(--color-background);
-  }
-
-  .bg-img {
-    display: block;
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    -webkit-background-size: cover;
-    background-size: cover;
-  }
-
-  .bg-img::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(8px);
-  }
 }
 </style>

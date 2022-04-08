@@ -31,6 +31,6 @@ const router = createRouter({
 createApp(App)
   .use(router)
   .use(Toaster, {
-    position: 'top-right'
+    position: 'top'
   })
   .mount('#app')
