@@ -146,10 +146,23 @@ export default {
       if (this.data.coub && this.form.url === "https://coub.com/view/" + this.data.coub.permalink) {
         return;
       }
+
       if (!this.valiUrl(this.form.url)) {
         this.$toast.error("Непраивльная ссылка");
         return;
       }
+
+      const newRoute = {
+              name: "Coub",
+              params: { coub_id: this.form.url.replace('https://coub.com/view/' , '') },
+            }
+
+      if (!this.$route.params.coub_id) {
+         this.$router.push(newRoute);
+         return;
+      }
+
+      this.$router.replace(newRoute);
       
       NProgress.start();
       this.resetData();
@@ -159,7 +172,7 @@ export default {
         .then((response) => {
           this.data = response.data.data;
           if (this.data) {
-            this.$router.push({
+            this.$router.replace({
               name: "Coub",
               params: { coub_id: this.data.coub.permalink },
             });
@@ -183,7 +196,6 @@ export default {
       this.loading = true;
     },
     sumbitForm() {
-      this.form.url = this.form.url
       this.search();
     },
     valiUrl: function (url) {
