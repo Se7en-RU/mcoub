@@ -3,29 +3,34 @@ import IconApple from "./icons/IconApple.vue";
 import IconSpotify from "./icons/IconSpotify.vue";
 import IconDeezer from "./icons/IconDeezer.vue";
 import IconYoutube from "./icons/IconYoutube.vue";
+import IconSad from "./icons/IconSad.vue";
 import axios from "axios";
-import NProgress from 'nprogress';
+import NProgress from "nprogress";
 </script>
 
 <template>
   <main>
     <div class="welcome-block">
       <Transition name="fade">
-      <div class="bg-img" v-bind:style="coubImageBackground"  v-if="data.coub"></div>
+        <div
+          class="bg-img"
+          v-bind:style="coubImageBackground"
+          v-if="data.coub"
+        ></div>
       </Transition>
       <div class="bg-fade"></div>
       <div class="container">
         <router-link to="/">
-        <img
-          alt="mCoub logo"
-          class="logo"
-          src="../assets/logo.svg"
-          width="125"
-          height="125"
-        />
+          <img
+            alt="mCoub logo"
+            class="logo"
+            src="../assets/logo.svg"
+            width="125"
+            height="125"
+          />
         </router-link>
         <div class="welcome-text">
-          <h2>Музыка из COUB</h2>
+          <h1>Музыка из COUB</h1>
           <h5>Распознать музыку с помощью Shazam</h5>
           <div class="welcome-search">
             <form
@@ -56,20 +61,14 @@ import NProgress from 'nprogress';
         <div class="container">
           <div class="music-container">
             <div class="album" v-if="shazamTrackImage">
-              <img
-                :alt="shazamTrackName"
-                :src="shazamTrackImage"
-              />
+              <img :alt="shazamTrackName" :src="shazamTrackImage" />
             </div>
             <div class="content">
               <div class="meta">
                 <span>{{ shazamMetaData }}</span>
-                <!-- <a :href="this.data.coub.file_versions.html5.audio.high.url" title="Скачать оригинал" download target="_blank">Скачать оригинал</a> -->
               </div>
-              <!-- <div class="names" @click="copyClipboadName()"> -->
               <h2>{{ shazamTrackTitle }}</h2>
               <p>{{ shazamTrackSubtitle }}</p>
-              <!-- </div> -->
 
               <div class="links">
                 <a
@@ -111,24 +110,18 @@ import NProgress from 'nprogress';
                   </a>
                 </template>
               </div>
-
-              <div class="meta"></div>
-
             </div>
           </div>
         </div>
       </div>
-
-      <!-- <div v-if="data.coub">
-          <iframe
-            :src="coubEmbedLink"
-            allowfullscreen
-            
-            frameborder="0"
-            width="640"
-            height="360"
-          ></iframe>
-        </div> -->
+    </Transition>
+    <Transition name="fade">
+      <div class="no-result-block" v-if="data.coub && !data.shazam">
+        <div class="container">
+          <i><IconSad /></i>
+          Мы не смогли найти музыку из этого Coub, но вы можете <a :href="coubTrackUrl" title="cкачать оригинал" download target="_blank">скачать оригинал ({{ coubTrackSize }})</a>
+        </div>
+      </div>
     </Transition>
   </main>
 </template>
@@ -136,26 +129,28 @@ import NProgress from 'nprogress';
 export default {
   watch: {
     "$route.params.coub_id"(value) {
-      this.loadPage()
-    }
+      this.loadPage();
+    },
   },
   beforeMount() {
     this.$router.isReady().then(() => {
-        this.loadPage()
+      this.loadPage();
     });
   },
   data() {
     return {
       data: {},
       form: {
-        url: ""
-      }
-    }
-     
+        url: "",
+      },
+    };
   },
   methods: {
     async search() {
-      if (this.data.coub && this.form.url === "https://coub.com/view/" + this.data.coub.permalink) {
+      if (
+        this.data.coub &&
+        this.form.url === "https://coub.com/view/" + this.data.coub.permalink
+      ) {
         return;
       }
 
@@ -165,15 +160,17 @@ export default {
       }
 
       const newRoute = {
-              name: "Coub",
-              params: { coub_id: this.form.url.replace('https://coub.com/view/' , '') },
-            }
+        name: "Coub",
+        params: {
+          coub_id: this.form.url.replace("https://coub.com/view/", ""),
+        },
+      };
 
       this.$router.push(newRoute);
       if (!this.$route.params.coub_id) {
-         return;
+        return;
       }
-      
+
       NProgress.start();
       this.resetData();
 
@@ -215,23 +212,23 @@ export default {
     },
     copyClipboadName() {
       if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(this.shazamTrackName);
+        navigator.clipboard.writeText(this.shazamTrackName);
       } else {
-          let textArea = document.createElement("textarea");
-          textArea.value = this.shazamTrackName;
-          textArea.style.position = "fixed";
-          textArea.style.left = "-999999px";
-          textArea.style.top = "-999999px";
-          document.body.appendChild(textArea);
-          textArea.focus();
-          textArea.select();
+        let textArea = document.createElement("textarea");
+        textArea.value = this.shazamTrackName;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
 
-          try {
-            document.execCommand('copy');
-          } catch (err) {
-             this.$toast.error("Не удалось скопировать название");
-             return;
-          }
+        try {
+          document.execCommand("copy");
+        } catch (err) {
+          this.$toast.error("Не удалось скопировать название");
+          return;
+        }
       }
 
       this.$toast.success("Название скопировано");
@@ -249,17 +246,32 @@ export default {
 
       return style;
     },
-    coubEmbedLink() {
-      return (
-        "//coub.com/embed/" +
-        this.data.coub.permalink +
-        "?muted=false&autostart=false&originalSize=false&startWithHD=false"
-      );
+
+    coubTrackUrl() {
+      let url;
+      if (this.data.coub) {
+        url = this.data.coub.file_versions.html5.audio.high.url;
+      }
+
+      return url;
+    },
+    coubTrackSize() {
+      let bytes;
+      if (this.data.coub) {
+        bytes = this.data.coub.file_versions.html5.audio.high.size;
+      } else {
+        return bytes;
+      }
+
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+      if (bytes == 0) return "0 Byte";
+      const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
     },
     shazamTrackName() {
       let name;
       if (this.data.shazam) {
-        name = `${this.data.shazam.subtitle} - ${this.data.shazam.title}`
+        name = `${this.data.shazam.subtitle} - ${this.data.shazam.title}`;
       }
 
       return name;
@@ -267,7 +279,7 @@ export default {
     shazamTrackTitle() {
       let name;
       if (this.data.shazam) {
-        name = this.data.shazam.title
+        name = this.data.shazam.title;
       }
 
       return name;
@@ -275,7 +287,7 @@ export default {
     shazamTrackSubtitle() {
       let name;
       if (this.data.shazam) {
-        name = this.data.shazam.subtitle
+        name = this.data.shazam.subtitle;
       }
 
       return name;
@@ -283,33 +295,25 @@ export default {
     shazamTrackImage() {
       let url;
       if (this.data.shazam) {
-        url = this.data.shazam.share.image
+        url = this.data.shazam.share.image;
       }
 
       return url;
     },
     shazamMetaData() {
-      let meta
+      let meta;
 
       const a = Array.from(this.data.shazam.sections[0].metadata);
 
-      a.forEach(function(item, index, array) {
+      a.forEach(function (item, index, array) {
         if (meta) {
-          meta = meta + ' • ' + item.text
+          meta = meta + " • " + item.text;
         } else {
-          meta = item.text
+          meta = item.text;
         }
       });
 
-      // const target_copy = Object.assign({}, this.data.shazam.sections[0].metadata);
-
-      // console.log(target_copy[0].text)
-      // for (let value of a) {
-      //   console.log(a.text)
-      //   // let meta = meta + value.text
-      // }
-
-      return meta
+      return meta;
     },
     YouTubeLink() {
       let link;
@@ -346,6 +350,25 @@ export default {
 </script>
 
 <style scoped>
+.no-result-block {
+  margin-top: 5vh;
+  font-size: 30px;
+  text-align: center;
+}
+
+.no-result-block i {
+  display: flex;
+  margin: 0 auto;
+  padding-bottom: 2vh;
+  fill: var(--color-text);
+  width: 20vh;
+  height: 20vh;
+}
+
+.no-result-block a {
+  color: var(--color-pink);
+}
+
 .music-container {
   display: flex;
   align-items: center;
@@ -360,12 +383,12 @@ export default {
   max-height: 285px;
 }
 
-.music-container .content  {
+.music-container .content {
   padding: 20px;
-  flex-grow: 1
+  flex-grow: 1;
 }
 
-.music-container .content .meta  {
+.music-container .content .meta {
   justify-content: space-between;
   display: flex;
   text-transform: uppercase;
@@ -382,8 +405,8 @@ export default {
 }
 
 .music-container .content p {
-    color: #666;
-    font-size: 18px;
+  color: #666;
+  font-size: 18px;
 }
 
 .music-container .content h2 {
@@ -393,10 +416,6 @@ export default {
   font-weight: 400;
   margin-top: 10px;
 }
-
-/* .music-container .content .names:hover {
-  cursor: pointer;
-} */
 
 .music-container .content .links {
   margin-top: 20px;
@@ -410,7 +429,6 @@ export default {
   margin-top: 10px;
 }
 
-
 .music-container .content .links a:hover {
   opacity: 0.8;
 }
@@ -423,7 +441,6 @@ export default {
   height: 45px;
 }
 
-
 .welcome-block {
   background: var(--color-background);
   overflow: hidden;
@@ -435,7 +452,7 @@ export default {
   position: relative;
 }
 
-.welcome-text h2 {
+.welcome-text h1 {
   font-size: 72px;
   color: var(--color-heading);
   display: block;
@@ -557,7 +574,8 @@ label {
   background: var(--color-background);
 }
 
-.bg-img, .bg-fade {
+.bg-img,
+.bg-fade {
   height: 100%;
   width: 100%;
   position: absolute;
@@ -573,10 +591,10 @@ label {
   /* .bg-img, .bg-fade {
     display: none;
   } */
-  
+
   .welcome-search {
-      width: 80%;
-      margin: 0 auto;
+    width: 80%;
+    margin: 0 auto;
   }
 
   .form-inline input {
@@ -605,6 +623,5 @@ label {
 }
 
 @media (min-width: 1024px) {
-
 }
 </style>
