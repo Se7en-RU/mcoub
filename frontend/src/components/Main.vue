@@ -180,9 +180,9 @@ export default {
           this.data = response.data.data;
         })
         .catch((error) => {
-          if (error.response && error.response.data.error) {
-            this.$toast.error(error.response.data.error);
-          }
+          // if (error.response && error.response.data.error) {
+          //   this.$toast.error(error.response.data.error);
+          // }
 
           this.$toast.error("Coub не найден");
           this.$router.push({ name: "Home" });
