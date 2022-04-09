@@ -34,7 +34,7 @@ import NProgress from 'nprogress';
               novalidate="true"
               class="form-inline"
             >
-              <label for="url">Ссылка на Cob</label>
+              <label for="url">Ссылка на Coub</label>
               <input
                 id="url"
                 v-model="form.url"
@@ -67,8 +67,8 @@ import NProgress from 'nprogress';
                 <!-- <a :href="this.data.coub.file_versions.html5.audio.high.url" title="Скачать оригинал" download target="_blank">Скачать оригинал</a> -->
               </div>
               <!-- <div class="names" @click="copyClipboadName()"> -->
-              <h2>{{ this.data.shazam.title }}</h2>
-              <p>{{ this.data.shazam.subtitle }}</p>
+              <h2>{{ shazamTrackTitle }}</h2>
+              <p>{{ shazamTrackSubtitle }}</p>
               <!-- </div> -->
 
               <div class="links">
@@ -264,6 +264,22 @@ export default {
 
       return name;
     },
+    shazamTrackTitle() {
+      let name;
+      if (this.data.shazam) {
+        name = this.data.shazam.title
+      }
+
+      return name;
+    },
+    shazamTrackSubtitle() {
+      let name;
+      if (this.data.shazam) {
+        name = this.data.shazam.subtitle
+      }
+
+      return name;
+    },
     shazamTrackImage() {
       let url;
       if (this.data.shazam) {
@@ -332,15 +348,9 @@ export default {
 <style scoped>
 .music-container {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   flex-direction: row;
-}
-
-.music-container > div {
   background: var(--color-background-inverse);
-  /* margin: 10px; */
-  /* padding: 20px; */
-  /* font-size: 30px; */
 }
 
 .music-container .album img {
@@ -417,6 +427,7 @@ export default {
 .welcome-block {
   background: var(--color-background);
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .welcome-text {
@@ -478,7 +489,7 @@ label {
 .form-inline {
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: stretch;
 }
 
 .form-inline label {
@@ -486,15 +497,15 @@ label {
 }
 
 .form-inline input {
-  width: 40vh;
+  min-width: 30vh;
   vertical-align: middle;
-  /* margin: 5px 10px 5px 0; */
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
   font-size: 20px;
+  text-align: center;
 }
 
 .form-inline input:focus {
@@ -503,19 +514,23 @@ label {
 }
 
 .form-inline button {
+  min-width: 110px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   padding: 9px 15px;
-  background-color: dodgerblue;
-  border: 0;
+  background-color: var(--color-pink);
   color: white;
   border: 0;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  font-size: 20px;
-  text-transform: uppercase;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .form-inline button:hover {
-  background-color: royalblue;
+  opacity: 0.8;
   cursor: pointer;
 }
 
@@ -558,9 +573,29 @@ label {
   /* .bg-img, .bg-fade {
     display: none;
   } */
+  
+  .welcome-search {
+      width: 80%;
+      margin: 0 auto;
+  }
 
+  .form-inline input {
+    width: 100%;
+    margin-top: 5vh;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+
+  .form-inline button {
+    width: 100%;
+    margin-top: 3vh;
+    padding: 14px 15px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
   .music-container {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .music-container .album img {
