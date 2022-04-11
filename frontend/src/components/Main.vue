@@ -155,7 +155,7 @@ export default {
       }
 
       if (!this.valiUrl(this.form.url)) {
-        this.$toast.error("Непраивльная ссылка");
+        this.$toast.error("Неправильная ссылка");
         return;
       }
 
