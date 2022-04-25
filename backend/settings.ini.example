@@ -1,4 +1,2 @@
 [FLASK_APP]
-FLASK_APP_SECRET_KEY=Super_slojniy_secret_key
-[FLASK_APP]
-FLASK_APP_SECRET_KEY=Super_secret_key
+FLASK_APP_SECRET_KEY=such_secure_such_wow

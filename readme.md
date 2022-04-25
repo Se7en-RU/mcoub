@@ -1,21 +1,34 @@
 # Coub Shazam music searcher
 
+https://mcoub.com/
+
 App provides search music from coub.com via Shazam.
-Приоложение осуществялет поиск музыки с coub.com посредством Shazam.
+Приложение осуществялет поиск музыки с coub.com посредством Shazam.
+
+Webserver: Nginx + Gunicorn
+Backend: Python + Flask
+Frontend: Vue3
+
 
 ## Install | Установка
     docker-compose build
+	cp services/nginx/nginx.conf.example services/nginx/nginx.conf
+	cp backend/settings.ini.example backend/settings.ini
 
 ## Run | Запуск
     docker-compose up -d
 
-# Rest API
+# Frontend
+
+http://localhost:3000/
+
+# Backend Rest API
 
 ### Request | Запрос
 
-`POST /search/`
+`POST http://localhost:5000/search/`
 
-    curl -i -H 'Accept: application/json' -d 'url=https://coub.com/view/30s87m' http://localhost:5000/search
+    curl -i -H 'Accept: application/json' -d '{"url":https://coub.com/view/3259pb"}'
 
 ### Response | Ответ
 

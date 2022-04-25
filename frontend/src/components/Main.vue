@@ -119,7 +119,14 @@ import NProgress from "nprogress";
       <div class="no-result-block" v-if="data.coub && !data.shazam">
         <div class="container">
           <i><IconSad /></i>
-          Мы не смогли найти музыку из этого Coub, но вы можете <a :href="coubTrackUrl" title="cкачать оригинал" download target="_blank">скачать оригинал ({{ coubTrackSize }})</a>
+          Мы не смогли найти музыку из этого Coub, но вы можете
+          <a
+            :href="coubTrackUrl"
+            title="cкачать оригинал"
+            download
+            target="_blank"
+            >скачать оригинал ({{ coubTrackSize }})</a
+          >
         </div>
       </div>
     </Transition>
