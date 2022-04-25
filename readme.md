@@ -5,9 +5,9 @@ https://mcoub.com/
 App provides search music from coub.com via Shazam.
 Приложение осуществялет поиск музыки с coub.com посредством Shazam.
 
-Webserver: Nginx + Gunicorn
-Backend: Python + Flask
-Frontend: Vue3
+- Webserver: Nginx + Gunicorn
+- Backend: Python + Flask
+- Frontend: Vue3
 
 
 ## Install | Установка
@@ -21,15 +21,17 @@ Frontend: Vue3
 
 # Frontend
 
-http://localhost:3000/
+http://localhost:443/
 
 # Backend Rest API
 
 ### Request | Запрос
 
-`POST https://localhost/search/`
-
-    curl -i -H 'Accept: application/json' -d '{"url":https://coub.com/view/3259pb"}'
+```bash
+curl -X POST https://localhost/api/search/
+   -H 'Content-Type: application/json'
+   -d '{"url":"https://coub.com/view/3259pb"}'
+```
 
 ### Response | Ответ
 
