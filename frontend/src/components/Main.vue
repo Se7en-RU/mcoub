@@ -4,6 +4,7 @@ import IconSpotify from "./icons/IconSpotify.vue";
 import IconDeezer from "./icons/IconDeezer.vue";
 import IconYoutube from "./icons/IconYoutube.vue";
 import IconSad from "./icons/IconSad.vue";
+import IconGithub from "./icons/IconGithub.vue";
 import axios from "axios";
 import NProgress from "nprogress";
 </script>
@@ -130,6 +131,11 @@ import NProgress from "nprogress";
         </div>
       </div>
     </Transition>
+    <div class="github-link">
+      <a href="https://github.com/Se7en-RU/coub_music_searcher" target="_blank">
+        <i><IconGithub /></i> 
+      </a>
+    </div>
   </main>
 </template>
 <script>
@@ -586,6 +592,21 @@ label {
   height: 100%;
   width: 100%;
   position: absolute;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.github-link i {
+  position: fixed;
+  bottom: 0;
+  width: 45px;
+  height: 45px;
+  margin: 2vh 0;
+  fill: var(--color-text);
 }
 
 @media only screen and (max-width: 400px) {

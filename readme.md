@@ -14,6 +14,7 @@ Frontend: Vue3
     docker-compose build
 	cp services/nginx/nginx.conf.example services/nginx/nginx.conf
 	cp backend/settings.ini.example backend/settings.ini
+	cd frontend && npm run build
 
 ## Run | Запуск
     docker-compose up -d
@@ -26,7 +27,7 @@ http://localhost:3000/
 
 ### Request | Запрос
 
-`POST http://localhost:5000/search/`
+`POST https://localhost/search/`
 
     curl -i -H 'Accept: application/json' -d '{"url":https://coub.com/view/3259pb"}'
 
