@@ -600,9 +600,12 @@ label {
   justify-content: center;
 }
 
+.github-link a {
+  display: flex;
+}
+
+
 .github-link i {
-  position: fixed;
-  bottom: 0;
   width: 45px;
   height: 45px;
   margin: 2vh 0;
